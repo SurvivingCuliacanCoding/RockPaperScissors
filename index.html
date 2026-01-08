@@ -8,43 +8,79 @@
 </head>
 
 <body>
+
+    <div id="scoreboard">
+        <p>Human: <span id="humanScore">0</span></p>
+        <p>Computer: <span id="computerScore">0</span></p>
+    </div>
+
+
+
+    </div>
+
+
+    <button data-choice="Rock">Rock</button>
+    <button data-choice="Paper">Paper</button>
+    <button data-choice="Scissors">Scissors</button>
+
+    <p id="result"></p>
+    <p id="winner"></p>
+
+
+
+
     <script>
-
-
-        console.log("Hello World")
-
-
-        function getComputerChoise() {
-
-            const r = Math.random();
-
-            if (r < 0.33) {
-                return "Rock";
-            } else if (r < 0.66) {
-                return "Paper";
-            } else {
-                return "Scissors";
-            }
-        }
-
-
-
-
-
-
-        function getHumanChoise() {
-            return prompt("Rock, Paper or Scissors");
-        }
-
-
-        
 
 
         let humanScore = 0
 
         let computerScore = 0
+        const WIN_SCORE = 5;
 
-        const totalGames = 5
+
+
+
+
+        const buttons = document.querySelectorAll("button");
+        const result = document.getElementById("result");
+        const humanScoreSpan = document.getElementById("humanScore");
+        const computerScoreSpan = document.getElementById("computerScore");
+        const winner = document.getElementById("winner");
+
+
+
+
+
+
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                
+                if (isGameOver()) return;
+
+                const humanChoice = button.dataset.choice;
+                const computerChoice = getComputerChoice();
+
+                result.textContent = playRound(humanChoice, computerChoice);
+
+                humanScoreSpan.textContent = humanScore;
+                computerScoreSpan.textContent = computerScore;
+
+                
+                if (isGameOver()) {
+                    endGame();
+                }
+            });
+        });
+
+
+
+    
+        function getComputerChoice() {
+            const choices = ["Rock", "Paper", "Scissors"];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
 
 
         function playRound(human, computer) {
@@ -68,32 +104,19 @@
             }
 
         }
-
-
-        for (let i = 1; i <= totalGames; i++) {
-
-            const human = getHumanChoise();
-
-             const computer = getComputerChoise();
-            
-
-            console.log(`Round ${i}`);
-            console.log(`Computer chose: ${computer}`);
-            console.log(playRound(human, computer));
-            console.log(`Score -> You: ${humanScore} | Computer: ${computerScore}`);
-            console.log("--------------------------");
+        function isGameOver() {
+            return humanScore === WIN_SCORE || computerScore === WIN_SCORE;
         }
 
 
-        console.log("Final Score:");
-        console.log(`You: ${humanScore} | Computer: ${computerScore}`);
+        function endGame() {
+            if (humanScore === WIN_SCORE) {
+                winner.textContent = " You won the game!";
+            } else {
+                winner.textContent = " Computer won the game!";
+            }
 
-        if (humanScore > computerScore) {
-            console.log("Congratulations! You won the game!");
-        } else if (humanScore < computerScore) {
-            console.log("You lost the game! Better luck next time!");
-        } else {
-            console.log("The game is a draw!");
+            buttons.forEach(btn => btn.disabled = true);
         }
 
 
@@ -111,8 +134,9 @@
 
 
 
-        console.log(humanScore);
-        console.log(computerScore);
+
+
+
 
 
 
